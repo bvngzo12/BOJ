@@ -1,5 +1,6 @@
 
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -8,52 +9,32 @@ public class Main {
     static boolean[][] visited_col = new boolean[9][10];
     static boolean[][] visited_box = new boolean[9][10];
 
+    static ArrayList<int[]> blanks = new ArrayList();
+   
     static boolean isValid(int r, int c, int v){
         return !(visited_row[r][v] || visited_col[c][v] || visited_box[(r/3)*3 +c/3][v]);
     }
 
-    static boolean sudoku(int x, int y){
-        for(int i  = x; i < 9; i++){
-            for(int j = y; j < 9; j++){
-                if(M[i][j]==0){
-                    for(int val = 1; val <= 9; val++){
-                        if(!isValid(i,j,val)) continue;
-
-                        M[i][j] = val;
-                        visited_row[i][val] = true;
-                        visited_col[j][val] = true;
-                        visited_box[(i/3)*3+j/3][val] = true;
-
-                        if(sudoku(i,0)) return true;
-                        else{
-                            M[i][j] = 0;
-                            visited_row[i][val] = false;
-                            visited_col[j][val] = false;
-                            visited_box[(i/3)*3+j/3][val] = false;
-                        }
-                    }// end for
-                    if(M[i][j]==0) return false;
-                }
-            }//end inner for
-        }//end for
-        return true;
-    }
-
-    public static void main(String[] args) {
+	public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         StringBuilder sb = new StringBuilder();
-
+        
+        
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
-                M[i][j] = sc.nextInt();
-                visited_row[i][M[i][j]] = true;
-                visited_col[j][M[i][j]] = true;
-                visited_box[(i/3)*3 +j/3][M[i][j]] = true;
+            	int val = sc.nextInt();
+                M[i][j] = val;
+                visited_row[i][val] = true;
+                visited_col[j][val] = true;
+                visited_box[(i/3)*3 +j/3][val] = true;
+                if(val == 0) {
+                	blanks.add(new int[] {i,j});
+                }
             }
         }
-
-        sudoku(0,0);
-
+        
+        sudoku(0);
+        
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
                 sb.append(M[i][j]+" ");
@@ -61,7 +42,28 @@ public class Main {
         }
 
         System.out.println(sb);
+	}
 
+	private static boolean sudoku(int i) {
+		if(i == blanks.size()) return true;
+		
+		int r = blanks.get(i)[0];
+		int c = blanks.get(i)[1];
+		
+		for(int v = 1; v <= 9; v++) {
+			if(isValid(r,c,v)) {
+				M[r][c] = v;
+                visited_row[r][v] = true;
+                visited_col[c][v] = true;
+                visited_box[(r/3)*3 +c/3][v] = true;
+				if(sudoku(i+1)) return true;
+				M[r][c] = 0;
+                visited_row[r][v] = false;
+                visited_col[c][v] = false;
+                visited_box[(r/3)*3 +c/3][v] = false;
+			}
+		}
+		return false;
+	}
 
-    }
 }
