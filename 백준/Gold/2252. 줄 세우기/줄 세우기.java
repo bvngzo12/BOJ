@@ -45,10 +45,11 @@ public class Main {
 		}
 		
 		ArrayList<Integer> result = new ArrayList();
+		StringBuilder sb= new StringBuilder();
 		
 		while(!Q.isEmpty()) {
 			int current = Q.poll();
-			result.add(current);
+			sb.append(current+" ");
 			for(int i = 0; i < adjList[current].size();i++) {
 				int target = adjList[current].get(i);
 				inDegree[target]--;
@@ -57,8 +58,8 @@ public class Main {
 				}
 			}
 		}
-		
-		result.forEach(el->System.out.print(el+" "));
+		System.out.println(sb);
+		//result.forEach(el->System.out.print(el+" "));
 		
 	}
 
