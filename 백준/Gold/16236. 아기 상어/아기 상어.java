@@ -1,8 +1,11 @@
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Queue;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Main {
 
@@ -12,30 +15,32 @@ public class Main {
 		int size;
 		int consume;
 
-		Shark() {
-			size = 2;
-			consume = 0;
+		Shark(int r, int c) {
+			this.r = r;
+			this.c = c;
+			this.size = 2;
+			this.consume = 0;
 		}
 	}
 
 	static int[] dr = { -1, 0, 1, 0 };
 	static int[] dc = { 0, -1, 0, 1 };
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		Shark shark = new Shark();
+		Shark shark = null;
 
-		int N = sc.nextInt();
-
+		int N = Integer.parseInt(br.readLine());
+		
 		int[][] M = new int[N][N];
 
 		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine()," ");
 			for (int j = 0; j < N; j++) {
-				M[i][j] = sc.nextInt();
+				M[i][j] = Integer.parseInt(st.nextToken());
 				if (M[i][j] == 9) {
-					shark.r = i;
-					shark.c = j;
+					shark = new Shark(i,j);
 				}
 			}
 		}
@@ -80,7 +85,7 @@ public class Main {
 				if (fishes.size() == 0 && Q.isEmpty())
 					break L; // 식사 불가 + 이동 불가
 
-				if (fishes.size() > 0) { // 현재 dist 범위에는 먹을 수 있는 고기가 없음
+				if (fishes.size() > 0) { // 식사
 					int targetR = N + 1;
 					int targetC = N + 1;
 
@@ -119,3 +124,4 @@ public class Main {
 	}
 
 }
+
