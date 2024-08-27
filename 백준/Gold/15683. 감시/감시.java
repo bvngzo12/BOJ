@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,6 +10,15 @@ public class Main {
 	static int ans = Integer.MAX_VALUE;
 	static int[][] M;
 	static ArrayList<int[]> cctv;
+	static int[][] Type =
+		{
+		 {0,0,0,0},
+		 {1,0,0,0},
+		 {1,0,1,0},
+		 {1,1,0,0},
+		 {1,1,1,0},
+		 {1,1,1,1},
+		};
 	
 	static int[] dr = {0,-1,0,1};
 	static int[] dc = {1,0,-1,0};
@@ -59,36 +67,19 @@ public class Main {
 		}
 	}
 	
-	static void monitorOn(int i, int d, int type, int value) {
-		int[] curr = cctv.get(i);
+	static void monitorOn(int idx, int d, int type, int value) {
+		int[] curr = cctv.get(idx);
 		int r = curr[0];
 		int c = curr[1];
-		int id = -(i+1);
-		switch(type) {
-		case 1:
-			marking(r,c,d,value,id);
-			return;
-			
-		case 2:
-			marking(r,c,d,value,id);
-			marking(r,c,(d+2)%4,value,id);
-			return;
-		case 3:
-			marking(r,c,d,value,id);
-			marking(r,c,(d+1)%4,value,id);
-			return;
-		case 4:
-			marking(r,c,d,value,id);
-			marking(r,c,(d+1)%4,value,id);
-			marking(r,c,(d+2)%4,value,id);
-			return;
-		case 5:
-			marking(r,c,d,value,id);
-			marking(r,c,(d+1)%4,value,id);
-			marking(r,c,(d+2)%4,value,id);
-			marking(r,c,(d+3)%4,value,id);
-			return;
+		int id = -(idx+1);
+		
+		int[] cmd = Type[type];
+		for(int i = 0; i < cmd.length; i++) {
+			if(cmd[i]==1) {
+				marking(r,c,(d+i)%4,value,id);
+			}
 		}
+		return;
 	}
 	
 	static void marking(int r, int c, int d, int val, int id) {
