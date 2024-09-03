@@ -1,4 +1,3 @@
-
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Scanner;
@@ -9,24 +8,10 @@ public class Main {
 	static final int BLUE = 1;
 	static int R,C;
 	static String[][] map;
-	static int[][] marbles;
 	static int[] Exit;
 	static int[] dr = {-1,0,1,0};
 	static int[] dc = {0,1,0,-1};
-	
-	static class Marble{
-		int r;
-		int c;
-		int color;
-		
-		public Marble(int r, int c, int color) {
-			super();
-			this.r = r;
-			this.c = c;
-			this.color = color;
-		}
-		
-	}
+
 	
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -37,8 +22,8 @@ public class Main {
 		map = new String[R][C];
 		
 		
-		Marble Red = null;
-		Marble Blue = null;
+		int[] Red = null;
+		int[] Blue = null;
 		
 		int[][][] dist = new int[2][R][C];
 		
@@ -49,10 +34,10 @@ public class Main {
 				map[i][j] = val;
 				
 				if(val.equals("R")) {
-					Red = new Marble(i, j, RED);
+					Red = new int[] {i, j};
 				}
 				else if(val.equals("B")) {
-					Blue = new Marble(i, j, BLUE);
+					Blue = new int[] {i, j};
 				}
 				else if(val.equals("O")) {
 					Exit = new int[] {i,j};
@@ -60,7 +45,7 @@ public class Main {
 			}
 		}
 		
-		Queue<Marble> Q = new ArrayDeque();
+		Queue<int[]> Q = new ArrayDeque();
 		
 		Q.offer(Blue);
 		Q.offer(Red);
@@ -71,15 +56,16 @@ public class Main {
 			int qSize = Q.size();
 			
 			for(int i = 0; i < qSize/2; i++) {
-				Marble blue = Q.poll();
-				Marble red = Q.poll();	
+				int[] blue = Q.poll();
+				int[] red = Q.poll();	
 				L2:for(int d = 0; d < dr.length; d++) {		// 0 : 상 / 1 : 우 / 2 : 하 / 3 : 좌 
-					int[] nBlue = move(blue.r, blue.c,d);
-					int[] nRed = move(red.r, red.c,d);
+					int[] nBlue = move(blue[0], blue[1],d);
+					int[] nRed = move(red[0], red[1],d);
 					
 					// 1. 새 좌표가 통로
 					if(isIn(nRed) && !isIn(nBlue)) {
 						success = true;
+						dist[RED][nRed[0]][nRed[1]] = cnt;
 						break L;
 					}
 					else if(isIn(nBlue)) {
@@ -92,28 +78,28 @@ public class Main {
 					if(nBlue[0] == nRed[0] && nBlue[1] == nRed[1]) {
 						switch(d) {
 						case 0:			// 위쪽 기울이기
-							if(blue.r < red.r) {	// 파란 구슬이 위
+							if(blue[0] < red[0]) {	// 파란 구슬이 위
 								nRed[0]+=1;
 							}else {
 								nBlue[0]+=1;
 							}
 							break;
 						case 1:			// 오른쪽 기울이기
-							if(blue.c < red.c) {	// 빨간 구슬이 오른쪽
+							if(blue[1] < red[1]) {	// 빨간 구슬이 오른쪽
 								nBlue[1]-=1;
 							}else {
 								nRed[1]-=1;
 							}
 							break;
 						case 2:			// 아래쪽 기울이기
-							if(blue.r < red.r) {	// 파란 구슬이 위
+							if(blue[0] < red[0]) {	// 파란 구슬이 위
 								nBlue[0]-=1;
 							}else {
 								nRed[0]-=1;
 							}
 							break;
 						case 3:			// 왼쪽 기울이기
-							if(blue.c < red.c) {	// 파란 구슬이 위
+							if(blue[1] < red[1]) {	// 파란 구슬이 위
 								nRed[1]+=1;
 							}else {
 								nBlue[1]+=1;
@@ -122,14 +108,14 @@ public class Main {
 						}
 					}
 					
-					if(red.r == nRed[0] && red.c == nRed[1] && blue.r == nBlue[0] && blue.c == nBlue[1]) continue L2;
+					if(red[0] == nRed[0] && red[1] == nRed[1] && blue[0] == nBlue[0] && blue[1] == nBlue[1]) continue L2;
 					
 					// 좌표 업데이트
 					dist[BLUE][nBlue[0]][nBlue[1]] = cnt;
 					dist[RED][nRed[0]][nRed[1]] = cnt;
 					
-					Q.offer(new Marble(nBlue[0], nBlue[1], BLUE));
-					Q.offer(new Marble(nRed[0], nRed[1], RED));
+					Q.offer(new int[] {nBlue[0], nBlue[1]});
+					Q.offer(new int[] {nRed[0], nRed[1]});
 				}
 			}
 			
@@ -137,6 +123,7 @@ public class Main {
 		}
 		
 		int ans = success ? 1 : 0;
+		//int ans = success ? dist[RED][Exit[0]][Exit[1]] : -1;
 		System.out.println(ans);
 		
 	}
