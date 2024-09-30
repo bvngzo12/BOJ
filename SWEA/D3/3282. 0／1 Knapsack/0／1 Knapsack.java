@@ -1,56 +1,39 @@
-import java.io.*;
-import java.util.*;
+
+import java.util.Scanner;
 
 public class Solution {
-	static int T, N, K;
-	static int[] value, weight;
-	static int[][] maps;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int T  = sc.nextInt();
 		
-		T = Integer.parseInt(br.readLine());
-		
-		for (int tc = 1; tc <= T; tc++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			N = Integer.parseInt(st.nextToken());
-			K = Integer.parseInt(st.nextToken());
+		for(int t = 1; t <= T; t++) {
+
+			int N = sc.nextInt();
+			int V = sc.nextInt();
 			
-			maps = new int[N+1][K+1];
-			weight = new int[N+1];
-			value = new int[N+1];
-			for (int n = 1; n <= N; n++) {
-				st = new StringTokenizer(br.readLine());
-				
-				int v = Integer.parseInt(st.nextToken());
-				int c = Integer.parseInt(st.nextToken());
-				
-				weight[n] = v;
-				value[n] = c;
+			int items[][] = new int[N+1][2];
+			
+			for(int i = 1; i <= N; i++) {
+				items[i][0] = sc.nextInt();
+				items[i][1] = sc.nextInt();
 			}
 			
-			run();
+			int[][] dp = new int[N+1][V+1];
 			
-			bw.write("#" + tc + " " + maps[N][K] + "\n");
-		}
-		
-		bw.close();
-		br.close();
-	}
-
-	private static void run() {
-		for (int i = 1; i < N+1; i++) {
-			int curWeight = weight[i];
-			int curValue = value[i];
-			
-			for (int j = 1; j < K+1; j++) {
-				if (curWeight <= j) { //넣을 수 있음
-					maps[i][j] = Math.max(curValue + maps[i-1][j-curWeight], maps[i-1][j]); 
-				} else {
-					maps[i][j] = Math.max(maps[i-1][j], maps[i][j-1]);
+			for(int w = 1; w <= V; w++) {
+				for(int i = 1; i <= N; i++) {
+					if(items[i][0] > w) {
+						dp[i][w] = dp[i-1][w];
+					}else {
+						int vi = items[i][1];
+						int wi = items[i][0];
+						dp[i][w] = Math.max(dp[i-1][w], vi + dp[i-1][w-wi]);
+					}
 				}
 			}
+			
+			System.out.printf("#%d %d\n",t,dp[N][V]);
 		}
 	}
 
