@@ -1,44 +1,36 @@
-
-import java.io.*;
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
-	static int N, K;
-	static int[] W, V;
-	static int[][] knapsack;
-	
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		K = Integer.parseInt(st.nextToken());
-		
-		W = new int[N+1];
-		V = new int[N+1];
-		knapsack = new int[N+1][K+1];
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			
-			W[i+1] = Integer.parseInt(st.nextToken());
-			V[i+1] = Integer.parseInt(st.nextToken());
-		}
-		
-		run();
-		
-		bw.write(knapsack[N][K] + "\n");
-		bw.close();
-		br.close();
-	}
 
-	private static void run() {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		int N = sc.nextInt();
+		int V = sc.nextInt();
+
+		int items[][] = new int[N + 1][2];
+
 		for (int i = 1; i <= N; i++) {
-			for (int k = 1; k <= K; k++) {
-				if (k >= W[i]) knapsack[i][k] = Math.max(knapsack[i-1][k], V[i] + knapsack[i-1][k-W[i]]);
-				else knapsack[i][k] = Math.max(knapsack[i-1][k], knapsack[i][k-1]);
+			items[i][0] = sc.nextInt();
+			items[i][1] = sc.nextInt();
+		}
+
+		int[][] dp = new int[N + 1][V + 1];
+
+		for (int w = 1; w <= V; w++) {
+			for (int i = 1; i <= N; i++) {
+				if (items[i][0] > w) {
+					dp[i][w] = dp[i - 1][w];
+				} else {
+					int vi = items[i][1];
+					int wi = items[i][0];
+					dp[i][w] = Math.max(dp[i - 1][w], vi + dp[i - 1][w - wi]);
+				}
 			}
 		}
+
+		System.out.println(dp[N][V]);
+
 	}
 
 }
