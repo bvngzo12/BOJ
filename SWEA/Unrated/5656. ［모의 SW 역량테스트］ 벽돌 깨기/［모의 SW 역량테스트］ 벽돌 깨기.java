@@ -9,7 +9,7 @@ public class Solution {
 	static int[][] map, copyMap;
 	static ArrayList<int[]> perms;
 	static int ans;
-	//static int cnt;
+	static int cnt;
 	
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -22,14 +22,14 @@ public class Solution {
 			R = sc.nextInt();
 			
 			ans = Integer.MAX_VALUE;
-			//cnt = 0;
+			cnt = 0;
 			
 			map = new int[R][C];
 			
 			for(int i = 0; i < R; i++) {
 				for(int j = 0; j < C; j++) {
 					map[i][j] = sc.nextInt();
-					//if(map[i][j] > 0) cnt++;
+					if(map[i][j] > 0) cnt++;
 				}
 			}
 			
@@ -37,9 +37,8 @@ public class Solution {
 			permutation(0, new int[N]);
 			
 			for(int[] perm : perms) {
-				//int[] perm = {2,2,6};
 				copyMap = new int[R][C];
-				//int left = cnt;
+				int left = cnt;
 				// copy map
 				for(int i = 0; i < R; i++) {
 					copyMap[i] = map[i].clone();
@@ -51,27 +50,11 @@ public class Solution {
 					
 					if(row == R) continue;
 					
-					crash(new int[] {row, perm[i]});
+					left = crash(new int[] {row, perm[i]}, left);
 					fall();
-					//System.out.println(left);
 				}
 				
-				int cnt = 0;
-				
-				for(int i = 0; i < R; i++) {
-					for(int j = 0; j < C; j++) {
-						if(copyMap[i][j] > 0)cnt++;
-					}
-				}
-				
-//				System.out.println("***************************");
-//				for(int i = 0; i < R; i++) {
-//					for(int j = 0; j < C; j++) {
-//						System.out.print(copyMap[i][j]+" ");
-//					}System.out.println();
-//				}
-				
-				ans = Math.min(ans, cnt);
+				ans = Math.min(ans, left);
 			}
 			
 			System.out.printf("#%d %d\n",tc, ans);
@@ -97,7 +80,7 @@ public class Solution {
 
 
 
-	private static void crash(int[] ball) {
+	private static int crash(int[] ball, int left) {
 		Queue<int[]> bricks = new ArrayDeque();
 		bricks.offer(ball);
 		
@@ -124,11 +107,13 @@ public class Solution {
 					bricks.offer(new int[] {nr,nc});
 				}
 			}
-			copyMap[r][c] = 0;
-			
+			if(copyMap[r][c] > 0) {
+				copyMap[r][c] = 0;
+				left--;
+			}
 		}
 		
-		//return left;
+		return left;
 		
 	}
 
@@ -145,7 +130,5 @@ public class Solution {
 			sel[idx] = i;
 			permutation(idx+1, sel);
 		}
-		
 	}
-
 }
