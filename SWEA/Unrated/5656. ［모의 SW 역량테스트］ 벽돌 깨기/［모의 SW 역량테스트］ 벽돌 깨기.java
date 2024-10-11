@@ -35,28 +35,7 @@ public class Solution {
 			
 			perms = new ArrayList<int[]>();
 			permutation(0, new int[N]);
-			
-			for(int[] perm : perms) {
-				copyMap = new int[R][C];
-				int left = cnt;
-				// copy map
-				for(int i = 0; i < R; i++) {
-					copyMap[i] = map[i].clone();
-				}
-
-				for(int i = 0; i < perm.length; i++) {
-					int row = 0;
-					while(row < R && copyMap[row][perm[i]] == 0) row++;
-					
-					if(row == R) continue;
-					
-					left = crash(new int[] {row, perm[i]}, left);
-					fall();
-				}
-				
-				ans = Math.min(ans, left);
-			}
-			
+	
 			System.out.printf("#%d %d\n",tc, ans);
 			
 		}
@@ -81,8 +60,11 @@ public class Solution {
 
 
 	private static int crash(int[] ball, int left) {
+		boolean[][] visited = new boolean[R][C];
+		
 		Queue<int[]> bricks = new ArrayDeque();
 		bricks.offer(ball);
+		visited[ball[0]][ball[1]] = true;
 		
 		int[] dr = {1,0,-1,0};
 		int[] dc = {0,1,0,-1};
@@ -102,15 +84,15 @@ public class Solution {
 					nc += dc[d];
 					
 					if(nr < 0 || nr >= R || nc < 0 || nc >= C) break;
-					if(copyMap[nr][nc] == 0) continue;
+					if(copyMap[nr][nc] == 0 || visited[nr][nc]) continue;
 					
 					bricks.offer(new int[] {nr,nc});
+					visited[nr][nc] = true;
 				}
 			}
-			if(copyMap[r][c] > 0) {
-				copyMap[r][c] = 0;
-				left--;
-			}
+			copyMap[r][c] = 0;
+			left--;
+			
 		}
 		
 		return left;
@@ -121,8 +103,25 @@ public class Solution {
 
 	private static void permutation(int idx, int[] sel) {
 		if(idx == sel.length) {
-			//System.out.println(Arrays.toString(sel));
-			perms.add(sel.clone());
+			copyMap = new int[R][C];
+			int left = cnt;
+			// copy map
+			for(int i = 0; i < R; i++) {
+				copyMap[i] = map[i].clone();
+			}
+
+			for(int i = 0; i < sel.length; i++) {
+				int row = 0;
+				while(row < R && copyMap[row][sel[i]] == 0) row++;
+				
+				if(row == R) continue;
+				
+				left = crash(new int[] {row, sel[i]}, left);
+				fall();
+			}
+			
+			ans = Math.min(ans, left);
+			
 			return;
 		}
 		
@@ -130,5 +129,7 @@ public class Solution {
 			sel[idx] = i;
 			permutation(idx+1, sel);
 		}
+		
 	}
+
 }
