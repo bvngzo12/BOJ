@@ -82,12 +82,12 @@ public class Main {
 		int parentS = findSet(s);
 		int parentE = findSet(e);
 		
-		if(parentS == parentE) return false;
+		//if(parentS == parentE) return false;
 		
-		else {
+		//else {
 			parents[parentE] = parentS;
 			return true;
-		}
+		//}
 		
 	}
 
