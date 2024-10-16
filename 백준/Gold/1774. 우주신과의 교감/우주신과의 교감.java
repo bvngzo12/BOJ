@@ -78,17 +78,8 @@ public class Main {
 		System.out.println(String.format("%.2f", ans));
 	}
 	
-	private static boolean union(int s, int e) {
-		int parentS = findSet(s);
-		int parentE = findSet(e);
-		
-		//if(parentS == parentE) return false;
-		
-		//else {
-			parents[parentE] = parentS;
-			return true;
-		//}
-		
+	private static void union(int s, int e) {
+        parents[findSet(e)] = findSet(s);
 	}
 
 	private static void makeSet() {
