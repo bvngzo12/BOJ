@@ -1,59 +1,49 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
-public class Main {
+public class Main{
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		
 		int N = Integer.parseInt(st.nextToken());
-		long K = Long.parseLong(st.nextToken());
-		
-		long[] hos = new long[N];
+		int K = Integer.parseInt(st.nextToken());
+		int[] lv = new int[N];
+		int max = -1;
 		
 		for(int i = 0; i < N; i++) {
-			hos[i] = Long.parseLong(br.readLine());
+			int v = Integer.parseInt(br.readLine());
+			
+			lv[i] = v;
+			max = Math.max(max, v);
 		}
 		
-		Arrays.sort(hos);
-		
-		long hi = hos[0] + K;
-		long lo = hos[0];
-		
-		long ans = -1;
-		
-		while(lo <= hi) {
-			long target = (lo + hi)/2;
-			Long lv = K;
-			boolean flag = true;
+		int left = 1;
+		int right = max + K;
+		int ans = -1;
+		while(left <= right) {
+			int mid = (left + right)/2;
 			
+			boolean flag = true;
+			int total = K;
 			for(int i = 0; i < N; i++) {
-				if((target - hos[i])<0) {		// 목표 레벨 달성
-					flag = true;
-					break;
+				if(lv[i] < mid) {
+					total -= (mid - lv[i]);
 				}
-					
-				if(lv < target - hos[i]) {		// 목표 레벨 실패
+				if(total < 0) {
 					flag = false;
-					break;
 				}
-				
-				lv -= (target - hos[i]);
 			}
 			
 			if(flag) {
-				ans = Math.max(ans, target);
-				lo = target + 1;
+				ans = Math.max(ans, mid);
+				left = mid +1;
 			}else {
-				hi = target-1;
+				right = mid - 1;
 			}
-		
-		}// end while
-		
+			
+		}
 		System.out.println(ans);
 		
 	}
