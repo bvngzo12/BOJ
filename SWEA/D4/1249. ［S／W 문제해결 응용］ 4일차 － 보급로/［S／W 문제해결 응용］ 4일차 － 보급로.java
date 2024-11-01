@@ -1,71 +1,60 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
 public class Solution {
+	static int[] dr = {1,0,-1,0};
+	static int[] dc = {0,1,0,-1};
 
-	static int N, map[][];
-	static int[] dr = {-1,1,0,0};
-	static int[] dc = {0,0,-1,1};
-	
-	public static void main(String[] args) throws NumberFormatException, IOException {
+	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int T = Integer.parseInt(br.readLine());
 		
-		for(int tc = 1; tc <= T; tc++) {
-			N = Integer.parseInt(br.readLine());
-			map = new int[N][N];
+		for(int t = 1; t <= T; t++) {
+			int n = Integer.parseInt(br.readLine());
+			int[][] map = new int[n][n];
+			int[][] dist = new int[n][n];
 			
-			for(int i = 0; i < N; i++) {
-				char[] ch = br.readLine().toCharArray();
-				for(int j = 0; j < N; j++) {
-					map[i][j] = ch[j] - '0';
-				}
-			}
-			System.out.printf("#%d %d\n",tc,getMinTime(0, 0, N-1, N-1));
-		}
-		
-	}
-	
-	static int getMinTime(int sr, int sc, int er, int ec) {
-		
-		final int INF = Integer.MAX_VALUE;
-		boolean[][] visited = new boolean[N][N];
-		int[][] minTime = new int[N][N];
-		PriorityQueue<int[]> PQ = new PriorityQueue<int[]>((o1,o2)->Integer.compare(o1[2], o2[2]));	//{r,c,time}
-		
-		for(int i = 0; i < N; i++) {
-			for(int j = 0; j < N; j++) {
-				minTime[i][j] = INF;
-			}
-		}
-		
-		minTime[sr][sc] = 0;
-		PQ.offer(new int[] {sr,sc,minTime[sr][sc]});
-		
-		while(!PQ.isEmpty()) {
-			int[] stopOver = PQ.poll();
-			int r = stopOver[0];
-			int c = stopOver[1];
-			int time = stopOver[2];
-			
-			if(visited[r][c])continue;
-			visited[r][c] = true;
-			
-			if(r == er && c == ec) return time;
-			
-			for (int d = 0; d < dr.length; d++) {
-				int nr = r + dr[d];
-				int nc = c + dc[d];
-				if(nr >= 0 && nr < N && nc >= 0 && nc < N && !visited[nr][nc] && minTime[nr][nc] > time + map[nr][nc]) {
-					minTime[nr][nc] = time + map[nr][nc];
-					PQ.offer(new int[] {nr, nc, minTime[nr][nc]});
+			for(int i = 0; i < n; i++) {
+				String str = br.readLine();
+				for(int j = 0; j < n; j++) {
+					map[i][j] = str.charAt(j)-'0';
+					dist[i][j] = Integer.MAX_VALUE;
 				}
 			}
 			
+			boolean[][] selected = new boolean[n][n];
+			
+			PriorityQueue<int[]> PQ = new PriorityQueue<int[]>((o1,o2)->Integer.compare(o1[2], o2[2]));
+			PQ.offer(new int[] {0,0,0});
+			dist[0][0] = 0;
+			while(!PQ.isEmpty()) {
+				int[] target = PQ.poll();
+				int r = target[0];
+				int c = target[1];
+				int d = target[2];
+				
+				if(selected[r][c]) continue;
+				
+				selected[r][c] = true;
+				
+				for(int k = 0; k < dr.length; k++) {
+					int nr = r + dr[k];
+					int nc = c + dc[k];
+					
+					if(nr < 0 || nr >= n|| nc < 0 || nc >= n || selected[nr][nc]) continue;
+					
+					if(dist[nr][nc] > d+map[nr][nc]) {
+						dist[nr][nc] = d+map[nr][nc];
+						PQ.add(new int[] {nr,nc,dist[nr][nc]});
+					}
+				}
+			}
+			
+			System.out.printf("#%d %d\n",t,dist[n-1][n-1]);
 		}
-		return -1;
+		
 	}
 
 }
