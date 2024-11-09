@@ -25,17 +25,10 @@ public class Main {
 					++v;
 			}
 		}
-		
-		
+
 		System.out.println(v-1);
 	}
 
-	/*
-	 1. 끝에 닿아서 종료
-	 2. 순환
-	 3. 남의 영역
-	*/
-	
 	private static boolean dfs(int r, int c, int v) {
 		if(area[r][c] != 0) {
 			return area[r][c]==v ? true : false; 
@@ -75,14 +68,6 @@ public class Main {
 		}
 		
 		return new int[] {nr, nc};
-	}
-	
-	public static void print(int[][] arr) {
-		for (int[] is : arr) {
-			for (int i : is) {
-				System.out.print(i+"  ");
-			}System.out.println();
-		}
 	}
 
 }
