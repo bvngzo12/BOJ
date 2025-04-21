@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
 
@@ -19,6 +19,8 @@ public class Main {
 			parents[i] = i;
 		}
 		
+        StringBuilder sb = new StringBuilder();
+        
 		for(int i =  0; i < m; i++) {
 			st = new StringTokenizer(br.readLine());
 			
@@ -34,11 +36,11 @@ public class Main {
 				parents[pv2] = pv1;
 				
 			}else if(cmd == 1) {
-				System.out.println(pv1 == pv2 ? "YES" : "NO");
+				sb.append(pv1 == pv2 ? "YES" : "NO").append("\n");
 			}
 			
 		}
-		
+		System.out.println(sb.toString());
 	}
 	
 	private static int find(int[] parents, int v) {
