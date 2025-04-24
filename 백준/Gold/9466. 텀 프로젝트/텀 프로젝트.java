@@ -7,7 +7,7 @@ public class Main {
 
 	static boolean[] visited;
 	static boolean[] finished;
-	static boolean[] isCycled;
+	static int ans;
 	static int[] nxts;
 	
 	public static void main(String[] args)throws IOException {
@@ -21,7 +21,7 @@ public class Main {
 			nxts = new int[n+1];
 			visited = new boolean[n+1];
 			finished = new boolean[n+1];
-			isCycled = new boolean[n+1];
+			ans = 0;
 			
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			
@@ -33,11 +33,8 @@ public class Main {
 				if(!visited[i]) dfs(i);
 			}
 			
-			int cnt= 0;
-			for(int i = 1; i <= n; i++) {
-				if(!isCycled[i]) cnt++;
-			}
-			System.out.println(cnt);
+			
+			System.out.println(n - ans);
 		}
 	}
 	
@@ -49,10 +46,9 @@ public class Main {
 		if(!visited[nxt]) dfs(nxt);
 		else if(!finished[nxt]) {
 			for(int start = nxt; start != curr; start = nxts[start] ) {
-				finished[start] = true;
-				isCycled[start] = true;
+				ans++;
 			}
-			isCycled[curr] = true;
+			ans++;
 		}
 		
 		finished[curr] = true;
